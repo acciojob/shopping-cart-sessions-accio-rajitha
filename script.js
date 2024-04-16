@@ -15,8 +15,9 @@ const productList = document.getElementById("product-list");
 const cartList = document.getElementById("cart-list");
 const clearCartBtn = document.getElementById("clear-cart-btn");
 
-// Function to render product list
+// Render product list
 function renderProducts() {
+  productList.innerHTML = "";
   products.forEach((product) => {
     const li = document.createElement("li");
     li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
@@ -24,9 +25,9 @@ function renderProducts() {
   });
 }
 
-// Function to render cart list
+// Render cart list
 function renderCart() {
-  cartList.innerHTML = ""; // Clear existing cart list
+  cartList.innerHTML = "";
   const cartItems = JSON.parse(sessionStorage.getItem("cart")) || [];
   cartItems.forEach((item) => {
     const li = document.createElement("li");
@@ -35,26 +36,20 @@ function renderCart() {
   });
 }
 
-// Function to add item to cart
+// Add item to cart
 function addToCart(productId) {
   const product = products.find((p) => p.id === productId);
-  if (product) {
-    let cartItems = JSON.parse(sessionStorage.getItem("cart")) || [];
-    cartItems.push({ id: product.id, name: product.name, price: product.price });
-    sessionStorage.setItem("cart", JSON.stringify(cartItems));
-    renderCart();
+  if (!product) {
+    console.error(`Product with ID ${productId} not found.`);
+    return;
   }
-}
-
-// Function to remove item from cart
-function removeFromCart(productId) {
-  let cartItems = JSON.parse(sessionStorage.getItem("cart")) || [];
-  cartItems = cartItems.filter((item) => item.id !== productId);
-  sessionStorage.setItem("cart", JSON.stringify(cartItems));
+  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  cart.push(product);
+  sessionStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
 
-// Function to clear cart
+// Clear cart
 function clearCart() {
   sessionStorage.removeItem("cart");
   renderCart();
@@ -63,7 +58,7 @@ function clearCart() {
 // Event listeners
 productList.addEventListener("click", (event) => {
   if (event.target.classList.contains("add-to-cart-btn")) {
-    const productId = parseInt(event.target.dataset.id);
+    const productId = parseInt(event.target.getAttribute("data-id"));
     addToCart(productId);
   }
 });
