@@ -17,7 +17,6 @@ const clearCartBtn = document.getElementById("clear-cart-btn");
 
 // Render product list
 function renderProducts() {
-  productList.innerHTML = "";
   products.forEach((product) => {
     const li = document.createElement("li");
     li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
@@ -27,9 +26,14 @@ function renderProducts() {
 
 // Render cart list
 function renderCart() {
+  // Clear previous cart items
   cartList.innerHTML = "";
-  const cartItems = JSON.parse(sessionStorage.getItem("cart")) || [];
-  cartItems.forEach((item) => {
+
+  // Get cart items from session storage
+  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
+  // Render cart items
+  cart.forEach((item) => {
     const li = document.createElement("li");
     li.textContent = `${item.name} - $${item.price}`;
     cartList.appendChild(li);
